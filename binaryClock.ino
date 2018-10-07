@@ -33,12 +33,12 @@ void loop() {
 
   if(digitalRead(timeChangeButton) == HIGH) {
     if(changeTimeOn) {
-      Serial.println("-----------");
       changeTimeOn = false;
-      changeTime();
+      Serial.println("---------");
+      hourCounter += 1;
     }
   }
-  else if(digitalRead(timeChangeButton) == LOW) {
+  if(digitalRead(timeChangeButton) == LOW) {
     changeTimeOn = true;
   }
   
@@ -110,9 +110,4 @@ void updateMinuteLeds(int bin[6]) {
       digitalWrite(minutePins[i], LOW);
     }
   }
-}
-
-void changeTime() {
-  hourCounter += 1;
-  Serial.println("changing time");
 }
