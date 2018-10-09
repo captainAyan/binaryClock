@@ -4,8 +4,8 @@ int hourPins[4] = {9,10,11,12};
 int minCounter = 0;
 int hourCounter = 0;
 
-int timeChangeButton = 2;
-boolean changeTimeOn;
+int timeChangeButton = 13;
+int changeTimeOn;
 
 void setup() {
   Serial.begin(9600);
@@ -14,6 +14,8 @@ void setup() {
 }
 
 void loop() {
+  decimalToBinary(hourCounter, 4);
+  decimalToBinary(minCounter, 6);
   
   if(millis() % 998 == 0) {
     if(minCounter < 59) {
@@ -21,7 +23,7 @@ void loop() {
     }
     else {
       minCounter = 0;
-      if(hourCounter < 14) {
+      if(hourCounter < 11) {
         hourCounter += 1;
       }
       else {
@@ -31,20 +33,25 @@ void loop() {
     delay(2);
   }
 
-  if(digitalRead(timeChangeButton) == HIGH) {
-    if(changeTimeOn) {
-      changeTimeOn = false;
-      Serial.println("---------");
-      hourCounter += 1;
+  if(millis() % 49 == 0) {
+    if(digitalRead(timeChangeButton) == HIGH) {
+      if(changeTimeOn == 1) {
+        changeTimeOn = 0;
+        Serial.println("---------");
+        if(hourCounter < 11) {
+          hourCounter = hourCounter + 1;
+        }
+        else {
+          hourCounter = 0;
+        }
+      }
     }
+    else {
+      changeTimeOn = 1;
+    }
+    delay(1);
   }
-  if(digitalRead(timeChangeButton) == LOW) {
-    changeTimeOn = true;
-  }
-  
-  decimalToBinary(hourCounter, 4);
-  decimalToBinary(minCounter, 6);
-   
+    
 }
 
 /* This function sets all the pinmode for the hourPins */
